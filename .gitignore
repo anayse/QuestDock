@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+build/
+dist/
+releases/
+QuestDock-Studio-Windows/
+*.zip
+test-output/
+.venv/
+*.tmp
+save*.json
+reset_user_progress.py
+private-builds/

@@ -1,0 +1,41 @@
+name: Publish Windows release
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - version.py
+    tags:
+      - 'v*'
+concurrency:
+  group: questdock-release
+  cancel-in-progress: false
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install build dependencies
+        run: python -m pip install -r requirements-build.txt
+      - name: Verify release tag and update validation
+        shell: pwsh
+        run: |
+          python -c "import os; from version import VERSION; assert os.environ['GITHUB_REF_TYPE'] != 'tag' or os.environ['GITHUB_REF_NAME'] == 'v'+VERSION, 'Tag must match version.py'"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -m unittest test_updater -v
+      - name: Build immutable version directory
+        run: python release.py
+      - name: Publish release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          $version = python -c "from version import VERSION; print(VERSION)"
+          $folder = "releases/v$version"
+          gh release create "v$version" "$folder/QuestDock.exe" "$folder/QuestDock-v$version-Windows.zip" "$folder/SHA256SUMS.txt" --target "$env:GITHUB_SHA" --title "QuestDock V$version" --notes-file CHANGELOG.md
