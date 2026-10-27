@@ -32,8 +32,9 @@ def select_release(data,repo,current=VERSION):
     if data.get('draft') or data.get('prerelease'):return None
     tag=data.get('tag_name','')
     if version_tuple(tag)<=version_tuple(current):return None
-    asset=next((a for a in data.get('assets',[]) if a.get('name')=='QuestDock.exe'),None)
-    if not asset:raise ValueError('新版尚未上传 QuestDock.exe。')
+    asset_name='QuestDock-update.bin' if version_tuple(tag)>=(1,2,0) else 'QuestDock.exe'
+    asset=next((a for a in data.get('assets',[]) if a.get('name')==asset_name),None)
+    if not asset:raise ValueError('新版尚未上传应用更新组件，请到发布页下载安装器。')
     digest=asset.get('digest') or ''
     if not re.fullmatch(r'sha256:[0-9a-fA-F]{64}',digest):
         raise ValueError('新版缺少 SHA-256 校验信息，暂不下载。')

@@ -1,10 +1,10 @@
 # 版本与发布约定
 
-- `version.py` 是唯一版本号来源：当前 `VERSION = '1.1.0'`、界面 `V1.1`。
+- `version.py` 是唯一版本号来源：当前 `VERSION = '1.2.0'`、界面 `V1.2`。
 - Git 稳定基线标签：`v1.0.0`。后续功能在单独分支开发；修复升级补丁号，新增功能升级次版本号。
 - 发布前更新 `version.py` 和 `CHANGELOG.md`，运行测试，然后执行 `python release.py`。
 - 发布脚本只创建新的 `releases/v版本号/` 目录，已有版本拒绝覆盖。
-- 每个 GitHub 正式 Release 的 tag 必须为 `vX.Y.Z`。上传 `QuestDock.exe`、版本 ZIP 和 `SHA256SUMS.txt`。
+- 每个 GitHub 正式 Release 的 tag 必须为 `vX.Y.Z`。上传 `QuestDock-Setup.exe`、版本 ZIP、`QuestDock-update.bin` 和 `SHA256SUMS.txt`。ZIP 只含安装器和说明文档，不能包含可直接运行的应用本体。
 - 更新程序使用 GitHub API 资产的 SHA-256 digest；无校验信息不执行更新。测试版和低版本不会被自动安装。
 - 目前支持公开 GitHub 仓库。不要把 PAT、用户存档、测试输出或打包缓存提交到仓库。
 - 安装更新不修改 `%APPDATA%/QuestDock/save.json`；替换前保存旧 EXE 为 `QuestDock.previous.exe`。

@@ -1,12 +1,14 @@
-# QuestDock V1.1 · 人生任务栏
+# QuestDock V1.2 · 人生任务栏
 
 This is a Quest Manager that can manage all your quest like games.
 
 公开发行版首次启动没有预置任务，可自行创建任务；保留默认任务类型与通用商店商品。已有用户升级时继续读取本机存档，不清空任务、奖励和设置。安装包不包含个人存档。
 
-当前版本号为 `1.1.0`，V1.0 保留为首个稳定基线。正式安装包按 `releases/v版本号/` 分目录保存，不覆盖历史版本。开发与发布约定见 DEVELOPMENT.md。
+当前版本号为 `1.2.0`，V1.0 保留为首个稳定基线。正式安装包按 `releases/v版本号/` 分目录保存，不覆盖历史版本。开发与发布约定见 DEVELOPMENT.md。
 
-安装时运行 Install.cmd，会弹出文件夹选择器，选择位置后确认最终路径（使用 QuestDock 子目录）。可取消安装。请选择当前用户有写入权限的位置；已有版本如需换目录，先从 Windows 应用设置卸载，再安装，个人任务仍保留在原用户数据目录。也可通过 PowerShell 的 `install.ps1 -InstallDirectory 'D:\Apps\QuestDock'` 指定最终目录。
+安装：直接下载并运行 **QuestDock-Setup.exe**；或下载 ZIP、完整解压后运行里面的同名安装器。两种方式均显示中文安装界面，可输入安装路径或点击“浏览”，点击“安装”才开始写入。关闭或取消不会安装。请选择当前用户有写入权限的位置；已有版本如需换目录，先从 Windows 应用设置卸载，再安装，个人任务仍保留在原用户数据目录。
+
+发布页的 `QuestDock-update.bin` 仅供程序自动更新使用，无需手动下载。V1.0/V1.1 用户升级到 V1.2 请运行一次新安装器；之后使用新版自动更新。安装器不会被作为应用本体执行更新。
 
 版本更新：设置 → 版本与更新，默认使用公开仓库 https://github.com/anayse/QuestDock 。可以手动检查，或开启“自动检查并下载新版”（默认关闭，开启后启动时及每 6 小时检查）。下载在后台进行；校验文件大小与 SHA-256 后，点击“安装并重启”并确认才替换程序。任务存档保留，原程序备份为 `QuestDock.previous.exe`。源码运行模式不自动替换 Python 文件。仓库尚无正式 Release 时会提示暂不可用。
 
@@ -51,7 +53,7 @@ This is a Quest Manager that can manage all your quest like games.
 - Ctrl+N 快速创建任务。滚轮浏览任务列表。
 - 兼容旧版存档；覆盖安装前先退出旧版。
 
-Windows 桌面悬浮任务系统。解压安装包后双击 Install.cmd 安装，不需要管理员权限或 Python。也可直接运行 QuestDock.exe。
+Windows 桌面悬浮任务系统。运行 QuestDock-Setup.exe 安装，不需要管理员权限或 Python。安装完成后从桌面或开始菜单打开 QuestDock。
 
 - 启动后只显示桌面悬浮球。拖动悬浮球移动，单击展开或隐藏任务栏。
 - 任务栏在悬浮球旁展开，可拖动顶部移动；高度根据屏幕自动适配。
@@ -68,7 +70,7 @@ Windows 桌面悬浮任务系统。解压安装包后双击 Install.cmd 安装�
 
 新版通过进程锁防止重复启动后同时覆盖存档。升级前需要退出旧版本（旧版本没有此机制）。
 
-通过 Install.cmd 安装后，会注册到 Windows 设置 → 应用 → 已安装的应用，显示名称与版本，可从此处卸载。安装仅针对当前用户，不需要管理员权限。直接运行便携 EXE 不会注册。卸载前先退出程序；卸载保留个人存档。此版本尚未购买代码签名证书，Windows 可能显示未知发布者提示。
+安装后，会注册到 Windows 设置 → 应用 → 已安装的应用，显示名称与版本，可从此处卸载。安装仅针对当前用户，不需要管理员权限。卸载前先退出程序；卸载保留个人存档。此版本尚未购买代码签名证书，Windows 可能显示未知发布者提示。
 
 开发：Python 3.12+，先 `python -m pip install Pillow`，运行 `python premium.py` 或 `python app.py`。
 

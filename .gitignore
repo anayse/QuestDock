@@ -11,3 +11,4 @@ test-output/
 save*.json
 reset_user_progress.py
 private-builds/
+QuestDock-Setup.spec

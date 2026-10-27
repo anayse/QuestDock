@@ -5,6 +5,7 @@ from pathlib import Path
 import shutil
 import subprocess
 import sys
+import zipfile
 from version import VERSION,DISPLAY_VERSION
 
 
@@ -15,16 +16,22 @@ def main():
     target=root/'releases'/('v'+VERSION)
     if target.exists():raise SystemExit('该版本目录已存在，禁止覆盖。请增加版本号。')
     subprocess.run([sys.executable,'-m','PyInstaller','--noconfirm','--onefile','--windowed','--icon','assets/questdock.ico','--add-data','update_install.ps1;.','--name','QuestDock','launcher.py'],cwd=root,check=True)
+    payload=root/'build'/'setup-payload.zip'
+    with zipfile.ZipFile(payload,'w',zipfile.ZIP_DEFLATED) as archive:
+        archive.write(root/'dist'/'QuestDock.exe','QuestDock.exe')
+        for name in ('install.ps1','install_paths.ps1','uninstall.ps1'):archive.write(root/name,name)
+        archive.writestr('version.json',json.dumps({'version':VERSION,'display_version':DISPLAY_VERSION}))
+    subprocess.run([sys.executable,'-m','PyInstaller','--noconfirm','--onefile','--windowed','--icon','assets/questdock.ico','--add-data',str(payload)+';.','--name','QuestDock-Setup','setup_launcher.py'],cwd=root,check=True)
     target.mkdir(parents=True)
-    for name in ('QuestDock.exe','Install.cmd','install.ps1','install_paths.ps1','uninstall.ps1','README.md','CHANGELOG.md'):
-        source=root/'dist'/name if name.endswith('.exe') else root/name
-        shutil.copy2(source,target/name)
-    (target/'version.json').write_text(json.dumps({'version':VERSION,'display_version':DISPLAY_VERSION},indent=2),encoding='utf-8')
-    # The ZIP contains only installable files, never source or user data.
-    zip_path=Path(shutil.make_archive(str(root/'releases'/('QuestDock-v'+VERSION+'-Windows')),'zip',target))
-    checksum=hashlib.sha256((target/'QuestDock.exe').read_bytes()).hexdigest()
-    (target/'SHA256SUMS.txt').write_text(checksum+'  QuestDock.exe\n'+hashlib.sha256(zip_path.read_bytes()).hexdigest()+'  '+zip_path.name+'\n',encoding='utf-8')
-    shutil.move(str(zip_path),str(target/zip_path.name))
+    shutil.copy2(root/'dist'/'QuestDock-Setup.exe',target/'QuestDock-Setup.exe')
+    # A .bin asset is exclusively for the updater; public EXEs are installers.
+    shutil.copy2(root/'dist'/'QuestDock.exe',target/'QuestDock-update.bin')
+    for name in ('README.md','CHANGELOG.md'):shutil.copy2(root/name,target/name)
+    zip_path=target/('QuestDock-v'+VERSION+'-Windows.zip')
+    with zipfile.ZipFile(zip_path,'w',zipfile.ZIP_DEFLATED) as archive:
+        for name in ('QuestDock-Setup.exe','README.md','CHANGELOG.md'):archive.write(target/name,name)
+    files=[target/'QuestDock-Setup.exe',target/'QuestDock-update.bin',zip_path]
+    (target/'SHA256SUMS.txt').write_text(''.join(hashlib.sha256(p.read_bytes()).hexdigest()+'  '+p.name+'\n' for p in files),encoding='utf-8')
     print(target)
 
 

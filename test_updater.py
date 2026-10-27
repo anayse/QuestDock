@@ -10,7 +10,14 @@ from version import VERSION
 class UpdateTests(unittest.TestCase):
     def release(self,tag=None,body=b'MZtest application'):
         if tag is None:tag='v'+str(version_tuple(VERSION)[0]+1)+'.0.0'
-        return dict(tag_name=tag,draft=False,prerelease=False,assets=[dict(name='QuestDock.exe',size=len(body),digest='sha256:'+hashlib.sha256(body).hexdigest(),browser_download_url='https://github.com/anayse/QuestDock/releases/download/'+tag+'/QuestDock.exe')])
+        name='QuestDock-update.bin' if version_tuple(tag)>=(1,2,0) else 'QuestDock.exe'
+        return dict(tag_name=tag,draft=False,prerelease=False,assets=[dict(name=name,size=len(body),digest='sha256:'+hashlib.sha256(body).hexdigest(),browser_download_url='https://github.com/anayse/QuestDock/releases/download/'+tag+'/'+name)])
+
+    def test_installer_is_never_used_as_runtime(self):
+        data=self.release();data['assets'][0]['name']='QuestDock-Setup.exe'
+        with self.assertRaises(ValueError):select_release(data,'anayse/QuestDock')
+        data['assets'][0]['name']='QuestDock.exe'
+        with self.assertRaises(ValueError):select_release(data,'anayse/QuestDock')
 
     def test_semantic_versions_and_repository_validation(self):
         self.assertEqual(version_tuple('V1.0'),(1,0,0))
