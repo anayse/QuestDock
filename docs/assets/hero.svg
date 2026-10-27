@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="400" viewBox="0 0 1280 400" role="img" aria-labelledby="title desc">
+  <title id="title">QuestDock</title>
+  <desc id="desc">Small steps. Real progress. A desktop quest companion.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#141a2b"/><stop offset="1" stop-color="#0b0e18"/></linearGradient>
+    <linearGradient id="accent"><stop stop-color="#ac9cff"/><stop offset="1" stop-color="#83dfc2"/></linearGradient>
+    <radialGradient id="glow"><stop stop-color="#8b74d8" stop-opacity=".24"/><stop offset="1" stop-color="#8b74d8" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="1280" height="400" rx="24" fill="url(#bg)"/>
+  <circle cx="1020" cy="200" r="300" fill="url(#glow)"/>
+  <g fill="none" stroke="#b6a8ed" stroke-opacity=".14"><circle cx="1010" cy="198" r="142"/><circle cx="1010" cy="198" r="191"/><path d="M780 198h460M1010 14v368"/></g>
+  <text x="70" y="72" fill="#83dfc2" font-family="Segoe UI,Arial,sans-serif" font-size="13" letter-spacing="4">YOUR DESKTOP QUEST COMPANION</text>
+  <text x="65" y="175" fill="#f0effa" font-family="Segoe UI,Arial,sans-serif" font-size="76" font-weight="700" letter-spacing="-2">QuestDock</text>
+  <text x="70" y="230" fill="#abaec4" font-family="Segoe UI,Arial,sans-serif" font-size="27">Small steps. Real progress.</text>
+  <path d="M70 274h72" stroke="url(#accent)" stroke-width="4" stroke-linecap="round"/>
+  <text x="70" y="326" fill="#8e94ad" font-family="Segoe UI,Arial,sans-serif" font-size="15" letter-spacing="2">PLAN  /  FOCUS  /  COMPLETE  /  REWARD</text>
+  <circle cx="1010" cy="198" r="84" fill="#171c2d" stroke="url(#accent)" stroke-width="2"/>
+  <circle cx="1010" cy="198" r="102" fill="none" stroke="#34324e" stroke-width="7"/>
+  <circle cx="1010" cy="198" r="102" fill="none" stroke="url(#accent)" stroke-width="7" stroke-linecap="round" stroke-dasharray="450 641" transform="rotate(-90 1010 198)"/>
+  <path d="m977 199 23 23 45-48" fill="none" stroke="#d1c9ff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="1122" cy="110" r="7" fill="#83dfc2"/>
+  <circle cx="864" cy="321" r="5" fill="#ac9cff"/>
+</svg>

@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - version.py
+      - questdock/version.py
     tags:
       - 'v*'
 concurrency:
@@ -26,18 +26,37 @@ jobs:
       - name: Verify release tag and update validation
         shell: pwsh
         run: |
-          python -c "import os; from version import VERSION; assert os.environ['GITHUB_REF_TYPE'] != 'tag' or os.environ['GITHUB_REF_NAME'] == 'v'+VERSION, 'Tag must match version.py'"
+          python -c "import os; from questdock.version import VERSION; assert os.environ['GITHUB_REF_TYPE'] != 'tag' or os.environ['GITHUB_REF_NAME'] == 'v'+VERSION, 'Tag must match version.py'"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          python -m unittest test_updater test_setup -v
+          python -m unittest tests.test_updater tests.test_setup tests.test_release -v
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          ./test_install_paths.ps1
-      - name: Build immutable version directory
-        run: python release.py
-      - name: Publish release assets
+          ./tests/test_install_paths.ps1
+      - name: Preserve existing releases
+        id: release-state
         env:
           GH_TOKEN: ${{ github.token }}
         shell: pwsh
         run: |
-          $version = python -c "from version import VERSION; print(VERSION)"
+          $version = python -c "from questdock.version import VERSION; print(VERSION)"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $exists = 'false'
+          $headers = @{ Authorization = "Bearer $env:GH_TOKEN"; Accept = 'application/vnd.github+json' }
+          try {
+            Invoke-RestMethod -Uri "https://api.github.com/repos/$env:GITHUB_REPOSITORY/releases/tags/v$version" -Headers $headers | Out-Null
+            $exists = 'true'
+          } catch {
+            if ([int]$_.Exception.Response.StatusCode -ne 404) { throw }
+          }
+          "exists=$exists" >> $env:GITHUB_OUTPUT
+      - name: Build immutable version directory
+        if: steps.release-state.outputs.exists != 'true'
+        run: python -m tools.release
+      - name: Publish release assets
+        if: steps.release-state.outputs.exists != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          $version = python -c "from questdock.version import VERSION; print(VERSION)"
           $folder = "releases/v$version"
           gh release create "v$version" "$folder/QuestDock-Setup.exe" "$folder/QuestDock-v$version-Windows.zip" "$folder/QuestDock-update.bin" "$folder/SHA256SUMS.txt" --target "$env:GITHUB_SHA" --title "QuestDock V$version" --notes-file CHANGELOG.md
