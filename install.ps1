@@ -1,5 +1,25 @@
+param([string]$InstallDirectory)
 $ErrorActionPreference = 'Stop'
-$destination = Join-Path $env:LOCALAPPDATA 'Programs\QuestDock'
+. (Join-Path $PSScriptRoot 'install_paths.ps1')
+$key = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\QuestDock'
+$existing = Get-ItemProperty -LiteralPath $key -ErrorAction SilentlyContinue
+if (-not $InstallDirectory) {
+    Add-Type -AssemblyName System.Windows.Forms
+    $picker = New-Object System.Windows.Forms.FolderBrowserDialog
+    $picker.Description = 'Choose where to install QuestDock. A QuestDock subfolder will be used. Your task data stays in your user profile.'
+    $picker.ShowNewFolderButton = $true
+    $picker.SelectedPath = if ($existing.InstallLocation) { $existing.InstallLocation } else { Join-Path $env:LOCALAPPDATA 'Programs' }
+    try {
+        if ($picker.ShowDialog() -ne [System.Windows.Forms.DialogResult]::OK) { return }
+        $InstallDirectory = Get-QuestDockDirectory $picker.SelectedPath
+    } finally { $picker.Dispose() }
+    $answer = [System.Windows.Forms.MessageBox]::Show("Install QuestDock to:`n$InstallDirectory", 'QuestDock Setup', 'OKCancel', 'Information')
+    if ($answer -ne [System.Windows.Forms.DialogResult]::OK) { return }
+}
+$destination = Resolve-QuestDockDirectory $InstallDirectory $PSScriptRoot $env:APPDATA
+if ($existing.InstallLocation -and [IO.Path]::GetFullPath($existing.InstallLocation).TrimEnd('\') -ne $destination) {
+    throw 'QuestDock is installed in another folder. Uninstall it first (your tasks will be retained), then choose the new folder.'
+}
 $version = (Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'version.json') | ConvertFrom-Json).version
 if ($version -notmatch '^\d+\.\d+\.\d+$') { throw 'Invalid package version.' }
 if (Get-Process QuestDock -ErrorAction SilentlyContinue) { throw 'Please exit QuestDock before installing.' }
@@ -13,7 +33,6 @@ $desktop.Save()
 $menu = $shell.CreateShortcut((Join-Path ([Environment]::GetFolderPath('Programs')) 'QuestDock.lnk'))
 $menu.TargetPath = Join-Path $destination 'QuestDock.exe'
 $menu.Save()
-$key = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\QuestDock'
 New-Item -Path $key -Force | Out-Null
 $powershell = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
 $values = @{

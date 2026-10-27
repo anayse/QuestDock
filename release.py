@@ -16,7 +16,7 @@ def main():
     if target.exists():raise SystemExit('该版本目录已存在，禁止覆盖。请增加版本号。')
     subprocess.run([sys.executable,'-m','PyInstaller','--noconfirm','--onefile','--windowed','--icon','assets/questdock.ico','--add-data','update_install.ps1;.','--name','QuestDock','launcher.py'],cwd=root,check=True)
     target.mkdir(parents=True)
-    for name in ('QuestDock.exe','Install.cmd','install.ps1','uninstall.ps1','README.md','CHANGELOG.md'):
+    for name in ('QuestDock.exe','Install.cmd','install.ps1','install_paths.ps1','uninstall.ps1','README.md','CHANGELOG.md'):
         source=root/'dist'/name if name.endswith('.exe') else root/name
         shutil.copy2(source,target/name)
     (target/'version.json').write_text(json.dumps({'version':VERSION,'display_version':DISPLAY_VERSION},indent=2),encoding='utf-8')

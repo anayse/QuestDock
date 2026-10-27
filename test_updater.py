@@ -4,10 +4,12 @@ import tempfile
 import unittest
 from pathlib import Path
 from updater import repository,version_tuple,select_release,download_release
+from version import VERSION
 
 
 class UpdateTests(unittest.TestCase):
-    def release(self,tag='v1.1.0',body=b'MZtest application'):
+    def release(self,tag=None,body=b'MZtest application'):
+        if tag is None:tag='v'+str(version_tuple(VERSION)[0]+1)+'.0.0'
         return dict(tag_name=tag,draft=False,prerelease=False,assets=[dict(name='QuestDock.exe',size=len(body),digest='sha256:'+hashlib.sha256(body).hexdigest(),browser_download_url='https://github.com/anayse/QuestDock/releases/download/'+tag+'/QuestDock.exe')])
 
     def test_semantic_versions_and_repository_validation(self):
@@ -18,7 +20,7 @@ class UpdateTests(unittest.TestCase):
             with self.assertRaises(ValueError):repository(value)
 
     def test_older_current_and_prerelease_are_ignored(self):
-        for tag in ('v0.9.0','v1.0','v1.0.0'):
+        for tag in ('v0.9.0','v1.0','v1.0.0','v'+VERSION):
             self.assertIsNone(select_release(self.release(tag),'anayse/QuestDock'))
         release=self.release();release['prerelease']=True
         self.assertIsNone(select_release(release,'anayse/QuestDock'))

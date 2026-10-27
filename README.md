@@ -1,10 +1,12 @@
-# QuestDock V1.0 · 人生任务栏
+# QuestDock V1.1 · 人生任务栏
 
 This is a Quest Manager that can manage all your quest like games.
 
 公开发行版首次启动没有预置任务，可自行创建任务；保留默认任务类型与通用商店商品。已有用户升级时继续读取本机存档，不清空任务、奖励和设置。安装包不包含个人存档。
 
-版本号为 `1.0.0`，本版作为后续开发的基线。正式安装包按 `releases/v版本号/` 分目录保存，不覆盖历史版本。开发与发布约定见 DEVELOPMENT.md。
+当前版本号为 `1.1.0`，V1.0 保留为首个稳定基线。正式安装包按 `releases/v版本号/` 分目录保存，不覆盖历史版本。开发与发布约定见 DEVELOPMENT.md。
+
+安装时运行 Install.cmd，会弹出文件夹选择器，选择位置后确认最终路径（使用 QuestDock 子目录）。可取消安装。请选择当前用户有写入权限的位置；已有版本如需换目录，先从 Windows 应用设置卸载，再安装，个人任务仍保留在原用户数据目录。也可通过 PowerShell 的 `install.ps1 -InstallDirectory 'D:\Apps\QuestDock'` 指定最终目录。
 
 版本更新：设置 → 版本与更新，默认使用公开仓库 https://github.com/anayse/QuestDock 。可以手动检查，或开启“自动检查并下载新版”（默认关闭，开启后启动时及每 6 小时检查）。下载在后台进行；校验文件大小与 SHA-256 后，点击“安装并重启”并确认才替换程序。任务存档保留，原程序备份为 `QuestDock.previous.exe`。源码运行模式不自动替换 Python 文件。仓库尚无正式 Release 时会提示暂不可用。
 

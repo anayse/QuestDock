@@ -29,6 +29,8 @@ jobs:
           python -c "import os; from version import VERSION; assert os.environ['GITHUB_REF_TYPE'] != 'tag' or os.environ['GITHUB_REF_NAME'] == 'v'+VERSION, 'Tag must match version.py'"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python -m unittest test_updater -v
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          ./test_install_paths.ps1
       - name: Build immutable version directory
         run: python release.py
       - name: Publish release assets
