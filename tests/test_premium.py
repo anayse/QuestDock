@@ -179,6 +179,34 @@ class DesktopTests(unittest.TestCase):
         saved=json.loads(app.DATA.read_text(encoding='utf-8'))
         self.assertEqual(saved['shop'][0]['cost'],25)
 
+    def test_all_reward_forms_accept_keyboard_after_click(self):
+        import tkinter as tk
+        a=self.a;a.toggle_panel();a.root.update()
+        def descendants(w):
+            for child in w.winfo_children():
+                yield child
+                yield from descendants(child)
+        settled=dict(a.data['tasks'][0],claimed=True,progress=1)
+        cases=[('new task',lambda:a.edit()),('task',lambda:a.edit(a.data['tasks'][0])),
+               ('settled task',lambda:a.edit(settled)),('new product',lambda:a.product()),
+               ('product',lambda:a.product(a.data['shop'][0]))]
+        for label,open_form in cases:
+            with self.subTest(form=label):
+                open_form();a.root.update()
+                self.addCleanup(a.dialog.destroy)
+                field=[w for w in descendants(a.dialog) if w.winfo_class()=='TEntry'][1]
+                # Simulate returning from another window; insert() bypasses keyboard routing.
+                other=tk.Tk();other.update();other.focus_force();a.root.update()
+                self.addCleanup(other.destroy)
+                field.event_generate('<ButtonPress-1>',x=15,y=15)
+                field.event_generate('<ButtonRelease-1>',x=15,y=15);a.root.update()
+                self.assertEqual(a.root.focus_get(),field)
+                field.event_generate('<Control-a>');field.event_generate('<KeyPress-7>');field.event_generate('<KeyPress-5>');a.root.update()
+                self.assertEqual(field.get(),'75')
+                field.event_generate('<KeyPress-BackSpace>');a.root.update()
+                self.assertEqual(field.get(),'7')
+                self.doCleanups();a.root.update()
+
     def test_edit_reward_preserves_paid_steps_and_saves(self):
         a=self.a;t=a.data['tasks'][0]
         t.update(target=3,progress=1,rewarded_steps=1,reward=20,claimed=False)
@@ -270,3 +298,4 @@ class DesktopTests(unittest.TestCase):
         self.assertIsNone(self.a.focus_job)
 
 if __name__=='__main__':unittest.main()
+

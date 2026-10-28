@@ -68,6 +68,10 @@ QuestDock installs for the current Windows user and does not require Python. Cho
 
 > For multi-step tasks, the configured reward applies **to each step**. A target of 3 with a reward of 30 yields 90 tokens and 90 XP in total. Single-step tasks require a manual reward claim. Decreasing or undoing progress does not take back rewards already issued; repeating a previously rewarded step does not pay again.
 
+### V1.2.2 input fix
+
+Fixes input fields failing to receive keyboard input after switching to another window. Clicking a task or shop field now restores keyboard focus, supporting select-all replacement and Backspace in both creation and editing forms.
+
 ### V1.2.1 interaction improvements
 
 The V1.2.1 installers include the improvements below. Existing V1.2 users can upgrade through the in-app updater or by running the new installer.
@@ -93,7 +97,7 @@ Task data stays on your computer:
 
 - **Application files and user data are separate.** Reinstalling, upgrading, and normal uninstallation preserve your task data. To change the installation directory, uninstall first, then install again.
 - **Automatic updates are off by default.** Enable them in **设置 → 版本与更新** (Settings → Version & updates), or check manually. Downloads run in the background. After verification, you confirm installation and restart.
-- **Releases remain available separately.** The current version is V1.2.1; V1.0 and V1.1 remain available. Users upgrading from V1.0/V1.1 to V1.2 need to run the new installer once.
+- **Releases remain available separately.** The current version is V1.2.2; V1.0 and V1.1 remain available. Users upgrading from V1.0/V1.1 to V1.2 need to run the new installer once.
 
 See the [user guide (中文)](docs/USER_GUIDE.md) for backups, migration, shortcuts, and troubleshooting. Release history is in the [changelog (中文)](CHANGELOG.md).
 

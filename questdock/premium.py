@@ -487,6 +487,13 @@ class App(UpdateUI,TypeUI,ActivityUI,CompactUI,DesktopShell,Core):
             elif y+widget.winfo_height()>top+visible:
                 canvas.yview_moveto(max(0,y+widget.winfo_height()-visible+8)/total)
         d.bind('<FocusIn>',reveal_focus)
+        def activate_input(e):
+            # Borderless Windows dialogs may not activate on click. A plain
+            # focus_set only remembers the field while another app owns focus.
+            # Acquire keyboard focus only on an explicit click, never on a timer.
+            if isinstance(e.widget,(tk.Entry,ttk.Entry,tk.Text)):
+                e.widget.focus_force()
+        d.bind('<ButtonPress-1>',activate_input,add='+')
         # Do not capture all app input: the orb and emergency exit stay usable.
         d.bind('<Escape>',lambda e:(d.destroy(),'break')[-1])
         d.protocol('WM_DELETE_WINDOW',d.destroy)
