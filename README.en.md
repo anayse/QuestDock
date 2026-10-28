@@ -68,6 +68,18 @@ QuestDock installs for the current Windows user and does not require Python. Cho
 
 > For multi-step tasks, the configured reward applies **to each step**. A target of 3 with a reward of 30 yields 90 tokens and 90 XP in total. Single-step tasks require a manual reward claim. Decreasing or undoing progress does not take back rewards already issued; repeating a previously rewarded step does not pay again.
 
+### Current source improvements (not yet released in installers)
+
+These changes are development work after V1.2. The existing V1.2 installers do not yet include these improvements.
+
+| Action | How it works |
+| --- | --- |
+| **Pin a task** | **追踪** (Track) is renamed to **置顶** (Pin), with an **已置顶** (Pinned) marker. Click again to unpin. Within the current filtered list, unfinished pinned tasks appear first. Pinning does not add a task to Today or start a focus session. The separate **任务面板置顶** setting keeps the application window above other windows. |
+| **Edit task rewards** | Click **编辑** (Edit), previously **详情** (Details), on a task card. The reward field is directly below the title and accepts nonnegative integers. Settled tasks also keep their Edit button. Click **保存任务** (Save task) to apply changes. Previously earned tokens and XP are unchanged; future unpaid steps use the new amount. |
+| **Edit shop prices** | Click **编辑** (Edit) on a shop item to open **编辑商品与价格** (Edit item and price). Change its name and positive integer token price, then click **保存修改** (Save changes). The new price applies to future redemptions; existing inventory tickets remain unchanged. |
+
+For example, if one step has already earned 20 tokens, changing the reward to 35 makes the next new step pay 35 tokens. The previous 20 tokens and corresponding XP remain unchanged.
+
 ## Your data and updates
 
 Task data stays on your computer:

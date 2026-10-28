@@ -156,7 +156,7 @@ class CompactUI:
     def task_card(self,t,y,w):
         key=t['id'];color=COLORS.get(t['kind'],VIOLET);complete=t['claimed']
         self.rect(12,y,w-24,123,CARD,LINE,10)
-        self.text(24,y+9,t['kind']+(' · 已追踪' if t.get('tracked') else ''),8,color)
+        self.text(24,y+9,t['kind']+(' · 已置顶' if t.get('tracked') else ''),8,color)
         if complete:self.text(w-24,y+9,'已结算',8,MINT,anchor='ne')
         else:
             label=self.text(w-24,y+9,str(t['reward'])+('/次' if t['target']>1 else ''),8,GOLD,anchor='ne')
@@ -169,12 +169,13 @@ class CompactUI:
         self.text(w-24,y+76,f'{t["progress"]}/{t["target"]}',8,SECOND,anchor='e')
         if complete:
             self.text(24,y+100,'✓ 奖励已结算',9,MINT)
+            self.button(w-138,y+90,52,26,'编辑',lambda:self.edit(t),key='edit'+key)
             self.button(w-76,y+90,52,26,'移除',lambda:self.delete(t),key='delete'+key)
         else:
             planned=t.get('planned_date')==self.data['date']
             self.button(22,y+90,48,26,'✓ 今日' if planned else '＋ 今日',lambda:self.toggle_today(t),key='today'+key,color=MINT if planned else DIM)
-            self.button(76,y+90,42,26,'追踪',lambda:self.pin_task(t),key='track'+key,color=VIOLET if t.get('tracked') else DIM)
-            self.button(124,y+90,42,26,'详情',lambda:self.edit(t),key='edit'+key)
+            self.button(76,y+90,42,26,'置顶',lambda:self.pin_task(t),key='track'+key,color=VIOLET if t.get('tracked') else DIM)
+            self.button(124,y+90,42,26,'编辑',lambda:self.edit(t),key='edit'+key)
             self.button(w-121,y+90,27,26,'−',lambda:self.advance(t,-1),key='minus'+key)
             self.button(w-88,y+90,64,26,'领奖' if ratio>=1 else '＋ 进度',lambda:self.claim(t) if ratio>=1 else self.advance(t,1),key=('claim' if ratio>=1 else 'plus')+key,primary=ratio>=1)
 

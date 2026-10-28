@@ -176,6 +176,37 @@ class DesktopTests(unittest.TestCase):
         button.invoke()
         self.assertEqual(p['cost'],25);self.assertEqual(p['name'],'新的休息券')
         self.assertEqual(a.data['bag'][0]['name'],old_name)
+        saved=json.loads(app.DATA.read_text(encoding='utf-8'))
+        self.assertEqual(saved['shop'][0]['cost'],25)
+
+    def test_edit_reward_preserves_paid_steps_and_saves(self):
+        a=self.a;t=a.data['tasks'][0]
+        t.update(target=3,progress=1,rewarded_steps=1,reward=20,claimed=False)
+        a.data['coins']=20;a.data['earned']=20
+        a.toggle_panel();a.root.update();a.edit(t);a.root.update()
+        def descendants(w):
+            for child in w.winfo_children():
+                yield child
+                yield from descendants(child)
+        entries=[w for w in descendants(a.dialog) if w.winfo_class()=='TEntry']
+        entries[1].delete(0,'end');entries[1].insert(0,'35')
+        next(w for w in descendants(a.dialog) if w.winfo_class()=='Button' and w.cget('text')=='保存任务').invoke()
+        self.assertEqual(t['reward'],35)
+        self.assertEqual(t['rewarded_steps'],1)
+        self.assertEqual(a.data['coins'],20);self.assertEqual(a.data['earned'],20)
+        saved=json.loads(app.DATA.read_text(encoding='utf-8'))
+        self.assertEqual(saved['tasks'][0]['reward'],35)
+        a.advance(t,1)
+        self.assertEqual(a.data['coins'],55);self.assertEqual(a.data['earned'],55)
+
+    def test_completed_task_keeps_edit_entry(self):
+        a=self.a;t=a.data['tasks'][0]
+        t.update(progress=t['target'],claimed=True)
+        a.toggle_panel();a.root.update();a.draw()
+        hit=next(h for h in a.hits if h[0]=='edit'+t['id'])
+        hit[-1]()
+        a.root.update()
+        self.assertEqual(a.dialog.title(),'编辑任务')
 
     def test_title_fits_pixel_budget(self):
         a=self.a

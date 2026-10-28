@@ -509,10 +509,10 @@ class App(UpdateUI,TypeUI,ActivityUI,CompactUI,DesktopShell,Core):
         self.confirm('移除任务',f"移除「{t['title']}」？已经领取的代币会保留。",action)
 
     def edit(self,t=None):
-        result=self.modal('任务详情' if t else '开启一段新冒险','把大目标拆成可推进的小步骤。',590)
+        result=self.modal('编辑任务' if t else '开启一段新冒险','奖励修改仅影响之后获得的奖励，已领取的代币和经验保持不变。' if t else '把大目标拆成可推进的小步骤。',590)
         if not result:return
         d,body=result;fields={}
-        for key,label,default in [('title','任务标题',''),('kind','任务类型',self.type_names()[0]),('desc','任务描述',''),('target','目标次数 / 阶段',1),('reward','每次进度奖励（目标为 1 时完成后领取）',20)]:
+        for key,label,default in [('title','任务标题',''),('reward','奖励代币 / 次（目标为 1 时完成后领取）',20),('target','目标次数 / 阶段',1),('kind','任务类型',self.type_names()[0]),('desc','任务描述','')]:
             tk.Label(body,text=label,font=(FONT,9),bg=SURFACE,fg=SECOND).pack(anchor='w',pady=(7,4))
             value=str(t[key] if t else default)
             if key=='kind':
@@ -548,7 +548,7 @@ class App(UpdateUI,TypeUI,ActivityUI,CompactUI,DesktopShell,Core):
         fields['title'].focus_set()
 
     def product(self,p=None):
-        result=self.modal('编辑奖励' if p else '添加一个小期待','编辑仅影响之后的兑换，背包中的奖励券保持不变。' if p else '奖励由你定义，代币由努力积累。',355)
+        result=self.modal('编辑商品与价格' if p else '添加一个小期待','编辑仅影响之后的兑换，背包中的奖励券保持不变。' if p else '奖励由你定义，代币由努力积累。',355)
         if not result:return
         d,body=result
         tk.Label(body,text='商品名称',bg=SURFACE,fg=SECOND,font=(FONT,9)).pack(anchor='w')
